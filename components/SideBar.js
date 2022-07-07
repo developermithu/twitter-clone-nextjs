@@ -14,7 +14,7 @@ import Image from "next/image";
 
 export default function SideBar() {
   return (
-    <div className=" col-span-2 flex flex-col items-center md:items-start gap-y-2 mr-6">
+    <div className=" col-span-3 flex flex-col items-center md:items-start gap-y-2 mr-6">
       {/* Twitter Logo */}
       <div className="pl-0 md:pl-4">
         <svg
