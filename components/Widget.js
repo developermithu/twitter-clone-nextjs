@@ -9,7 +9,7 @@ export default function Widget({ newsResults, randomUsers }) {
 
   return (
     <div className="col-span-3 hidden lg:inline ml-6">
-      <div className="flex gap-x-2 items-center bg-gray-200 p-3 rounded-full ">
+      <div className="flex gap-x-2 items-center bg-gray-200 p-3 rounded-full sticky top-1">
         <SearchIcon className="h-5 w-5 text-gray-400" />
         <input
           type="text"

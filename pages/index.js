@@ -1,12 +1,17 @@
 import Head from "next/head";
 import Image from "next/image";
-import TweetFeed from "../components/TweetFeed";
 import SideBar from "../components/SideBar";
 import Widget from "../components/Widget";
+import Feed from "../components/Feed";
+import { getSession, useSession } from "next-auth/react";
+import Login from "../components/Login";
 
 export default function Home({ newsResults, randomUsers }) {
+  const { data: session } = useSession();
+  if (!session) return <Login />;
+
   return (
-    <div className=" lg:max-w-7xl mx-auto">
+    <div className=" lg:max-w-7xl mx-auto max-h-screen">
       <Head>
         <title>Twitter Clone By DeveloperMithu</title>
         <meta
@@ -21,7 +26,7 @@ export default function Home({ newsResults, randomUsers }) {
         <SideBar />
 
         {/* News Feed */}
-        <TweetFeed />
+        <Feed />
 
         {/* Widget */}
         <Widget
@@ -34,7 +39,7 @@ export default function Home({ newsResults, randomUsers }) {
 }
 
 // SSR
-export async function getServerSideProps() {
+export async function getServerSideProps(context) {
   const newsResults = await fetch(
     "https://saurav.tech/NewsAPI/top-headlines/category/business/us.json"
   ).then((res) => res.json());
@@ -43,10 +48,13 @@ export async function getServerSideProps() {
     "https://randomuser.me/api/?results=50&inc=name,login,picture"
   ).then((res) => res.json());
 
+  const session = await getSession(context);
+
   return {
     props: {
       newsResults,
       randomUsers,
+      session,
     },
   };
 }

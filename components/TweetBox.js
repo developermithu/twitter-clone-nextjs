@@ -1,47 +1,38 @@
-import {
-  PhotographIcon,
-  EmojiHappyIcon,
-  LocationMarkerIcon,
-} from "@heroicons/react/outline";
-import { useState } from "react";
-import TextareaAutosize from "react-textarea-autosize";
+import { DotsHorizontalIcon, HeartIcon } from "@heroicons/react/outline";
 
 export default function TweetBox() {
-  const [input, setInput] = useState("");
-
   return (
-    <div className="flex gap-x-4 items-start mt-5">
-      <img src="/developermithu.png" alt="user img" className="w-12 h-12" />
-
-      <div className="flex-1 flex-col">
-        {/* form */}
-        <form>
-          <TextareaAutosize
-            minRows={2}
-            maxRows={10}
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            placeholder="What's happening?"
-            className="w-full outline-none text-xl"
-          />
-        </form>
-
-        {/* Icon field */}
-        <div className="flex items-center justify-between">
-          {/* Emoji Icons */}
-          <div className="flex items-center gap-x-4">
-            <PhotographIcon className="w-6 h-6 hover:scale-125 transition duration-300 ease-out text-twitter cursor-pointer" />
-            <EmojiHappyIcon className="w-6 h-6 hover:scale-125 transition duration-300 ease-out text-twitter cursor-pointer" />
-            <LocationMarkerIcon className="w-6 h-6 hover:scale-125 transition duration-300 ease-out text-twitter cursor-pointer" />
+    <div className="flex items-start justify-between gap-x-3">
+      <img src="/developermithu.png" alt="user" className="w-12 h-12" />
+      <div className="flex flex-col gap-y-3">
+        {/* Description */}
+        <div className="flex justify-between">
+          <div className="flex items-center gap-x-1.5">
+            <h4 className="font-bold capitalize">Mithu Das</h4>
+            <span className="text-gray-500">@developermithu.</span>
+            <span>3 hours ago</span>
           </div>
-
-          {/* Tweet Button */}
-          <button
-            disabled={!input}
-            className="px-5 py-2 rounded-full bg-twitter hover:opacity-90 disabled:opacity-40 font-bold text-white"
-          >
-            Tweet
-          </button>
+          <DotsHorizontalIcon className="w-6 h-6 hover:bg-twitter/20 rounded-full cursor-pointer" />
+        </div>
+        {/* Image */}
+        <div>
+          <p>
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Aspernatur
+            facere quod dolor soluta temporibus quam fugit, atque enim. Quas Lorem ipsum dolor sit amet...
+            </p>
+          <img
+            src="https://cdn.pixabay.com/photo/2021/11/25/12/47/tulips-6823523_960_720.jpg"
+            alt=""
+            className=" object-cover rounded-lg mt-3"
+          />
+        </div>
+        {/* Buttons */}
+        <div className="flex items-center justify-between">
+          <HeartIcon className="w-6 h-6 hover:bg-twitter/20 rounded-full cursor-pointer" />
+          <HeartIcon className="w-6 h-6 hover:bg-twitter/20 rounded-full cursor-pointer" />
+          <HeartIcon className="w-6 h-6 hover:bg-twitter/20 rounded-full cursor-pointer" />
+          <HeartIcon className="w-6 h-6 hover:bg-twitter/20 rounded-full cursor-pointer" />
+          <HeartIcon className="w-6 h-6 hover:bg-twitter/20 rounded-full cursor-pointer" />
         </div>
       </div>
     </div>

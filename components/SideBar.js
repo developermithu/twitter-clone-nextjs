@@ -11,8 +11,11 @@ import {
 } from "@heroicons/react/outline";
 import SideBarItem from "./SideBarItem";
 import Image from "next/image";
+import { useSession, signOut } from "next-auth/react";
 
 export default function SideBar() {
+  const { data: session } = useSession();
+
   return (
     <div className=" col-span-3 flex flex-col items-center md:items-start gap-y-2 mr-6">
       {/* Twitter Logo */}
@@ -44,10 +47,13 @@ export default function SideBar() {
       </button>
 
       {/* User Profile */}
-      <div className="flex items-center gap-x-3.5 hover:bg-gray-200 cursor-pointer px-4 py-3 rounded-full transition-all duration-200 mt-10">
-        <Image src="/developermithu.png" width={40} height={40} />
+      <div
+        onClick={() => signOut()}
+        className="flex items-center gap-x-3.5 hover:bg-gray-200 cursor-pointer px-4 py-3 rounded-full transition-all duration-200 mt-10"
+      >
+        <Image src={session.user.image} width={40} height={40} />
         <div className=" hidden lg:flex flex-col">
-          <span className="font-bold capitalize">Mithu das</span>
+          <span className="font-bold capitalize">{session.user.name}</span> 
           <span className="text-sm">@DeveloperMithu</span>
         </div>
         <DotsHorizontalIcon className="h-5 hidden lg:inline" />
