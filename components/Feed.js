@@ -2,8 +2,26 @@ import React from "react";
 import { RefreshIcon } from "@heroicons/react/outline";
 import TweetForm from "../components/TweetForm";
 import TweetBox from "../components/TweetBox";
+import { collection, onSnapshot, orderBy, query } from "firebase/firestore";
+import { useEffect, useState } from "react";
+import { db } from "../firebase";
 
 export default function TweetFeed() {
+  const [tweets, setTweets] = useState([]);
+
+  useEffect(
+    () =>
+      onSnapshot(
+        query(collection(db, "tweets"), orderBy("timestamp", "desc")),
+        (snapshot) => {
+          setTweets(snapshot.docs);
+        }
+      ),
+    []
+  );
+
+  // console.log(tweets);
+
   return (
     <div className="col-span-9 lg:col-span-6 border border-t-0">
       <div className="flex items-center justify-between border-b pb-3 sticky top-1 z-50 px-3">
@@ -17,9 +35,11 @@ export default function TweetFeed() {
       </div>
 
       {/* Tweet Box */}
-      <div className="py-5 border px-3">
-        <TweetBox />
-      </div>
+      {tweets.map((tweet) => (
+        <div className="py-5 border px-3">
+          <TweetBox key={tweet.id} id={tweet.id} tweet={tweet} />
+        </div>
+      ))}
     </div>
   );
 }
