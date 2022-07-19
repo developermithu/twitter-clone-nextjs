@@ -11,7 +11,7 @@ export default function Home({ newsResults, randomUsers }) {
   if (!session) return <Login />;
 
   return (
-    <div className=" lg:max-w-7xl mx-auto max-h-screen">
+    <div className="lg:max-w-7xl mx-auto max-h-screen">
       <Head>
         <title>Twitter Clone By DeveloperMithu</title>
         <meta
@@ -21,7 +21,7 @@ export default function Home({ newsResults, randomUsers }) {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <main className="grid grid-cols-12 pt-3">
+      <main className="grid grid-cols-12">
         {/* Sidebar */}
         <SideBar />
 

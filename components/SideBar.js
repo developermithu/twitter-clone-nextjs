@@ -17,7 +17,7 @@ export default function SideBar() {
   const { data: session } = useSession();
 
   return (
-    <div className=" col-span-3 flex flex-col items-center md:items-start gap-y-2 mr-6">
+    <div className="col-span-3 flex flex-col items-center md:items-start gap-y-2 mr-6 pt-3">
       {/* Twitter Logo */}
       <div className="pl-0 md:pl-4">
         <svg
@@ -53,7 +53,7 @@ export default function SideBar() {
       >
         <Image src={session.user.image} width={40} height={40} />
         <div className=" hidden lg:flex flex-col">
-          <span className="font-bold capitalize">{session.user.name}</span> 
+          <span className="font-bold capitalize">{session.user.name}</span>
           <span className="text-sm">@DeveloperMithu</span>
         </div>
         <DotsHorizontalIcon className="h-5 hidden lg:inline" />

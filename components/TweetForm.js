@@ -17,6 +17,7 @@ import {
 } from "firebase/firestore";
 import { db, storage } from "../firebase";
 import { getDownloadURL, ref, uploadString } from "firebase/storage";
+import toast, { Toaster } from "react-hot-toast";
 
 export default function TweetForm() {
   const [input, setInput] = useState("");
@@ -51,6 +52,7 @@ export default function TweetForm() {
     setInput("");
     setSelectedFile(null);
     setloading(false);
+    toast.success("Successfully tweeted!");
   };
 
   const addImageToTweet = (e) => {
@@ -66,68 +68,71 @@ export default function TweetForm() {
   };
 
   return (
-    <div className="flex gap-x-4 items-start mt-5">
-      <Image
-        src={session.user.image}
-        width={48}
-        height={48}
-        alt={session.user.name}
-      />
+    <>
+      <Toaster position="top-center" reverseOrder={false} />
+      <div className="flex gap-x-4 items-start mt-5">
+        <Image
+          src={session.user.image}
+          width={48}
+          height={48}
+          alt={session.user.name}
+        />
 
-      <div className="flex-1 flex-col">
-        {/* form */}
-        <form>
-          <TextareaAutosize
-            minRows={2}
-            maxRows={10}
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            placeholder="What's happening?"
-            className="w-full outline-none text-xl"
-          />
+        <div className="flex-1 flex-col">
+          {/* form */}
+          <form>
+            <TextareaAutosize
+              minRows={2}
+              maxRows={10}
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              placeholder="What's happening?"
+              className="w-full outline-none text-xl"
+            />
 
-          {selectedFile && (
-            <div className="py-5 relative">
-              <XCircleIcon
-                onClick={() => setSelectedFile(null)}
-                className="absolute w-9 h-9 top-7 left-2 fill-red text-red-500 hover:scale-110 transition duration-300 cursor-pointer"
-              />
-              <img
-                src={selectedFile}
-                alt=""
-                className={loading && "animate-pulse"}
-              />
+            {selectedFile && (
+              <div className="py-5 relative">
+                <XCircleIcon
+                  onClick={() => setSelectedFile(null)}
+                  className="absolute w-9 h-9 top-7 left-2 fill-red text-red-500 hover:scale-110 transition duration-300 cursor-pointer"
+                />
+                <img
+                  src={selectedFile}
+                  alt=""
+                  className={loading && "animate-pulse"}
+                />
+              </div>
+            )}
+          </form>
+
+          {/* Icon field */}
+          <div className="flex items-center justify-between">
+            {/* Emoji Icons */}
+            <div className="flex items-center gap-x-4">
+              <div onClick={() => filePickerRef.current.click()}>
+                <PhotographIcon className="w-6 h-6 hover:scale-125 transition duration-300 ease-out text-twitter cursor-pointer" />
+                <input
+                  type="file"
+                  hidden
+                  ref={filePickerRef}
+                  onChange={addImageToTweet}
+                />
+              </div>
+              <EmojiHappyIcon className="w-6 h-6 hover:scale-125 transition duration-300 ease-out text-twitter cursor-pointer" />
+              <LocationMarkerIcon className="w-6 h-6 hover:scale-125 transition duration-300 ease-out text-twitter cursor-pointer" />
             </div>
-          )}
-        </form>
 
-        {/* Icon field */}
-        <div className="flex items-center justify-between">
-          {/* Emoji Icons */}
-          <div className="flex items-center gap-x-4">
-            <div onClick={() => filePickerRef.current.click()}>
-              <PhotographIcon className="w-6 h-6 hover:scale-125 transition duration-300 ease-out text-twitter cursor-pointer" />
-              <input
-                type="file"
-                hidden
-                ref={filePickerRef}
-                onChange={addImageToTweet}
-              />
-            </div>
-            <EmojiHappyIcon className="w-6 h-6 hover:scale-125 transition duration-300 ease-out text-twitter cursor-pointer" />
-            <LocationMarkerIcon className="w-6 h-6 hover:scale-125 transition duration-300 ease-out text-twitter cursor-pointer" />
+            {/* Tweet Button */}
+            <button
+              onClick={createTweet}
+              disabled={!input.trim() || loading}
+              className="px-5 py-2 rounded-full bg-twitter hover:opacity-90 disabled:opacity-40 font-bold text-white"
+            >
+              Tweet
+            </button>
           </div>
-
-          {/* Tweet Button */}
-          <button
-            onClick={createTweet}
-            disabled={!input.trim() || loading}
-            className="px-5 py-2 rounded-full bg-twitter hover:opacity-90 disabled:opacity-40 font-bold text-white"
-          >
-            Tweet
-          </button>
         </div>
       </div>
-    </div>
+    </>
   );
 }

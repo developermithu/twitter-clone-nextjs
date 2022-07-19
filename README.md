@@ -3,6 +3,7 @@
 ### How To Use 
 ```
 npm run dev
+npm run build
 ```
 
 ### Package List

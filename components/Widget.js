@@ -9,18 +9,20 @@ export default function Widget({ newsResults, randomUsers }) {
 
   return (
     <div className="col-span-3 hidden lg:inline ml-6">
-      <div className="flex gap-x-2 items-center bg-gray-200 p-3 rounded-full sticky top-1">
-        <SearchIcon className="h-5 w-5 text-gray-400" />
+      <div className="sticky top-0 py-1 bg-white">
+      <div className="flex gap-x-2 items-center bg-gray-100 py-2.5 px-5 rounded-full">
+        <SearchIcon className="h-5 w-5 text-gray-600" />
         <input
           type="text"
           placeholder="Search twitter.."
-          className=" bg-transparent outline-none"
+          className=" bg-transparent outline-none placeholder:text-gray-600 flex-1"
         />
+      </div>
       </div>
 
       {/* Top Headline News Result */}
       <div className="mt-5 bg-gray-100 rounded-lg">
-        <h2 className="text-lg font-bold py-2 pl-3">What's happening?</h2>
+        <h2 className="text-lg font-bold py-2 pl-3">What&apos;s happening?</h2>
 
         {newsResults.slice(0, articleNum).map((article) => {
           return <NewsItem key={article.url} article={article} />;
