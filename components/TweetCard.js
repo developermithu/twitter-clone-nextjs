@@ -55,7 +55,6 @@ export default function TweetCard({ tweet }) {
 
   const deleteTweet = async () => {
     await deleteDoc(doc(db, "tweets", tweet.id));
-    // Delete The Image
     if (tweet.data().image) {
       deleteObject(ref(storage, `tweets/${tweet.id}/image`));
     }

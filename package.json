@@ -12,6 +12,7 @@
     "@chakra-ui/tooltip": "^2.0.5",
     "@heroicons/react": "^1.0.6",
     "firebase": "^9.8.4",
+    "framer-motion": "^6.5.1",
     "moment": "^2.29.4",
     "next": "12.2.0",
     "next-auth": "^4.9.0",

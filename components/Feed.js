@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import { db } from "../firebase";
 import toast, { Toaster } from "react-hot-toast";
 import { useRouter } from "next/router";
+import { AnimatePresence, motion } from "framer-motion";
 
 export default function TweetFeed() {
   const router = useRouter();
@@ -48,15 +49,26 @@ export default function TweetFeed() {
           <TweetForm />
         </div>
 
-        {/* Tweet Box */}
-        {tweets.map((tweet) => (
-          <div
-            key={tweet.id}
-            className="py-5 border border-gray-100 hover:bg-gray-100/75 transition duration-300 cursor-pointer px-3"
-          >
-            <TweetCard id={tweet.id} tweet={tweet} />
-          </div>
-        ))}
+        {/* AnimatePresence enables the animation of components that have been removed from the tree. */}
+        <AnimatePresence>
+          {/* Tweet Box */}
+          {tweets.map((tweet) => (
+            <motion.div
+              key={tweet.id}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 1 }}
+            >
+              <div
+                key={tweet.id}
+                className="py-5 border border-gray-100 hover:bg-gray-100/75 transition duration-300 cursor-pointer px-3"
+              >
+                <TweetCard id={tweet.id} tweet={tweet} />
+              </div>
+            </motion.div>
+          ))}
+        </AnimatePresence>
       </div>
     </>
   );
