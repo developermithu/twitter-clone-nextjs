@@ -11,7 +11,7 @@ export default function Widget({ newsResults, randomUsers }) {
     <div className="col-span-3 hidden lg:inline ml-6">
       <div className="sticky top-0 py-1 bg-white">
       <div className="flex gap-x-2 items-center bg-gray-100 py-2.5 px-5 rounded-full">
-        <SearchIcon className="h-5 w-5 text-gray-600" />
+        <SearchIcon className="h-4 w-4 text-gray-600" />
         <input
           type="text"
           placeholder="Search twitter.."

@@ -6,6 +6,7 @@ import {
   SwitchVerticalIcon,
   ChatIcon,
   ShareIcon,
+  TrashIcon,
 } from "@heroicons/react/outline";
 import { HeartIcon as HeartIconFilled } from "@heroicons/react/solid";
 import {
@@ -16,8 +17,9 @@ import {
   setDoc,
 } from "firebase/firestore";
 import Moment from "react-moment";
-import { db } from "../firebase";
+import { db, storage } from "../firebase";
 import { useEffect, useState } from "react";
+import { deleteObject, ref } from "firebase/storage";
 
 export default function TweetCard({ tweet }) {
   const { data: session } = useSession();
@@ -51,6 +53,14 @@ export default function TweetCard({ tweet }) {
     }
   };
 
+  const deleteTweet = async () => {
+    await deleteDoc(doc(db, "tweets", tweet.id));
+    // Delete The Image
+    if (tweet.data().image) {
+      deleteObject(ref(storage, `tweets/${tweet.id}/image`));
+    }
+  };
+
   return (
     <div className="flex items-start gap-x-3">
       <img src={tweet.data().userImage} alt="user" className="w-12 h-12" />
@@ -58,15 +68,15 @@ export default function TweetCard({ tweet }) {
         {/* Description */}
         <div className="flex justify-between">
           <div className="flex items-center gap-x-1.5">
-            <h4 className="font-bold capitalize">{tweet.data().name}</h4>
-            <span className="text-gray-500">@developermithu.</span>
+            <h4 className="font-bold capitalize">{tweet.data().userName}</h4>
+            <span className="text-gray-500">{tweet.data().userEmail}</span>
             <Moment fromNow>{tweet?.data()?.timestamp?.toDate()}</Moment>
           </div>
           <DotsHorizontalIcon className="w-9 h-9 p-1.5 hover:bg-twitter/10 rounded-full cursor-pointer text-gray-500 hover:text-twitter/60 transition duration-300" />
         </div>
         {/* Image */}
         <div>
-          <p>{tweet.data().text}</p>
+          <p>{tweet.data().content}</p>
           <img
             src={tweet.data().image}
             alt=""
@@ -82,6 +92,15 @@ export default function TweetCard({ tweet }) {
               className="w-9 h-9 p-1.5 hover:bg-twitter/10 rounded-full cursor-pointer text-gray-500 hover:text-twitter/60 transition duration-300"
             />
           </Tooltip>
+
+          {tweet.data().userEmail === session.user.email && (
+            <Tooltip label="Delete" fontSize="smaller">
+              <TrashIcon
+                onClick={deleteTweet}
+                className="w-9 h-9 p-1.5 hover:bg-red-500/10 rounded-full cursor-pointer text-gray-500 hover:text-red-500/60 transition duration-300"
+              />
+            </Tooltip>
+          )}
 
           <Tooltip label="Retweet" fontSize="smaller">
             <SwitchVerticalIcon className="w-9 h-9 p-1.5 hover:bg-green-500/10 rounded-full cursor-pointer text-gray-500 hover:text-green-500/60 transition duration-300" />

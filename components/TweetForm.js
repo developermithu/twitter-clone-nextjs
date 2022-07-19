@@ -32,9 +32,10 @@ export default function TweetForm() {
     setloading(true);
 
     const docRef = await addDoc(collection(db, "tweets"), {
-      name: session.user.name,
+      userEmail: session.user.email, // unique field
+      userName: session.user.name,
       userImage: session.user.image,
-      text: input,
+      content: input,
       timestamp: serverTimestamp(),
     });
 
