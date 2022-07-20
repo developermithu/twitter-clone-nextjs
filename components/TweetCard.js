@@ -20,16 +20,31 @@ import Moment from "react-moment";
 import { db, storage } from "../firebase";
 import { useEffect, useState } from "react";
 import { deleteObject, ref } from "firebase/storage";
+import { useRecoilState } from "recoil";
+import { modalState, tweetIdState } from "../atom/modalAtom";
 
 export default function TweetCard({ tweet }) {
   const { data: session } = useSession();
   const [likes, setLikes] = useState([]);
+  const [comments, setComments] = useState([]);
   const [hasLiked, setHasLiked] = useState(false);
+  // Recoil State
+  const [open, setOpen] = useRecoilState(modalState);
+  const [tweetId, setTweetId] = useRecoilState(tweetIdState);
 
+  // get the likes
   useEffect(() => {
     const unsubscribe = onSnapshot(
       collection(db, "tweets", tweet.id, "likes"),
       (snapshot) => setLikes(snapshot.docs)
+    );
+  }, [db]);
+
+  // get the comments
+  useEffect(() => {
+    const unsubscribe = onSnapshot(
+      collection(db, "tweets", tweet.id, "comments"),
+      (snapshot) => setComments(snapshot.docs)
     );
   }, [db]);
 
@@ -79,21 +94,30 @@ export default function TweetCard({ tweet }) {
           <img
             src={tweet.data().image}
             alt=""
-            className=" object-cover rounded-lg mt-3"
+            className="object-cover rounded-lg mt-3"
           />
         </div>
 
         {/* Buttons */}
         <div className="flex items-center justify-between">
-          <Tooltip label="Reply" fontSize="smaller">
-            <ChatIcon
-              title="Reply"
-              className="w-9 h-9 p-1.5 hover:bg-twitter/10 rounded-full cursor-pointer text-gray-500 hover:text-twitter/60 transition duration-300"
-            />
-          </Tooltip>
+          <div className="flex items-center">
+            <Tooltip label="Reply" fontSize="x-small">
+              <ChatIcon
+                onClick={() => {
+                  setTweetId(tweet.id);
+                  setOpen(!open);
+                }}
+                className="w-9 h-9 p-1.5 hover:bg-twitter/10 rounded-full cursor-pointer text-gray-500 hover:text-twitter/60 transition duration-300"
+              />
+            </Tooltip>
+
+            {comments.length > 0 && (
+              <span className="text-sm">{comments.length}</span>
+            )}
+          </div>
 
           {tweet.data().userEmail === session.user.email && (
-            <Tooltip label="Delete" fontSize="smaller">
+            <Tooltip label="Delete" fontSize="x-small">
               <TrashIcon
                 onClick={deleteTweet}
                 className="w-9 h-9 p-1.5 hover:bg-red-500/10 rounded-full cursor-pointer text-gray-500 hover:text-red-500/60 transition duration-300"
@@ -101,21 +125,21 @@ export default function TweetCard({ tweet }) {
             </Tooltip>
           )}
 
-          <Tooltip label="Retweet" fontSize="smaller">
+          <Tooltip label="Retweet" fontSize="x-small">
             <SwitchVerticalIcon className="w-9 h-9 p-1.5 hover:bg-green-500/10 rounded-full cursor-pointer text-gray-500 hover:text-green-500/60 transition duration-300" />
           </Tooltip>
 
           {/* Like Unlike Button */}
           <div className="flex items-center">
             {hasLiked ? (
-              <Tooltip label="Unlike" fontSize="smaller">
+              <Tooltip label="Unlike" fontSize="x-small">
                 <HeartIconFilled
                   onClick={likeTweet}
                   className="w-9 h-9 p-1.5 hover:bg-red-500/10 rounded-full cursor-pointer text-red-500 hover:text-red-500/60 transition duration-300"
                 />
               </Tooltip>
             ) : (
-              <Tooltip label="Like" fontSize="smaller">
+              <Tooltip label="Like" fontSize="x-small">
                 <HeartIcon
                   onClick={likeTweet}
                   className="w-9 h-9 p-1.5 hover:bg-red-500/10 rounded-full cursor-pointer text-gray-500 hover:text-red-500/60 transition duration-300"
@@ -124,13 +148,13 @@ export default function TweetCard({ tweet }) {
             )}
 
             {likes.length > 0 && (
-              <span className={hasLiked ? "text-red-500" : ""}>
+              <span className={hasLiked ? "text-red-500 text-sm" : "text-sm"}>
                 {likes.length}
               </span>
             )}
           </div>
 
-          <Tooltip label="Share" fontSize="smaller">
+          <Tooltip label="Share" fontSize="x-small">
             <ShareIcon className="w-9 h-9 p-1.5 hover:bg-twitter/10 rounded-full cursor-pointer text-gray-500 hover:text-twitter/60 transition duration-300" />
           </Tooltip>
         </div>

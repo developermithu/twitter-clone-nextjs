@@ -23,13 +23,12 @@ export default function TweetForm() {
   const [input, setInput] = useState("");
   const { data: session } = useSession();
   const [selectedFile, setSelectedFile] = useState(null);
-  const [loading, setloading] = useState(false);
+  const [loading, setLoading] = useState(false);
   const filePickerRef = useRef(null);
 
   // Add a new document with a generated id.
   const createTweet = async () => {
-    if (loading) return;
-    setloading(true);
+    setLoading(true);
 
     const docRef = await addDoc(collection(db, "tweets"), {
       userEmail: session.user.email, // unique field
@@ -52,7 +51,7 @@ export default function TweetForm() {
 
     setInput("");
     setSelectedFile(null);
-    setloading(false);
+    setLoading(false);
     toast.success("Successfully tweeted!");
   };
 

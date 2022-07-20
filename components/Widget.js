@@ -26,7 +26,7 @@ export default function Widget({ newsResults, randomUsers }) {
         <h2 className="text-lg font-bold py-2 pl-3">What&apos;s happening?</h2>
 
         <AnimatePresence>
-          {newsResults.slice(0, articleNum).map((article) => {
+          {newsResults?.slice(0, articleNum).map((article) => {
             return (
               <motion.div
                 key={article.url}
@@ -54,7 +54,7 @@ export default function Widget({ newsResults, randomUsers }) {
         <h2 className="text-lg font-bold py-2 pl-3">Who To Follow</h2>
 
         <AnimatePresence>
-          {randomUsers.slice(0, randomUserNumber).map((user) => {
+          {randomUsers?.slice(0, randomUserNumber).map((user) => {
             return (
               <motion.div
                 key={user.login.uuid}

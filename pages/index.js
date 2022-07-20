@@ -5,36 +5,44 @@ import Widget from "../components/Widget";
 import Feed from "../components/Feed";
 import { getSession, useSession } from "next-auth/react";
 import Login from "../components/Login";
+import CommentModal from "../components/CommentModal";
 
 export default function Home({ newsResults, randomUsers }) {
   const { data: session } = useSession();
   if (!session) return <Login />;
 
   return (
-    <div className="lg:max-w-7xl mx-auto max-h-screen">
-      <Head>
-        <title>Twitter Clone By DeveloperMithu</title>
-        <meta
-          name="description"
-          content="Twitter Clone with react nextjs firebase and tailwindcss"
-        />
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
+    <>
+      <div className="lg:max-w-7xl mx-auto max-h-screen">
+        <Head>
+          <title>Twitter Clone By DeveloperMithu</title>
+          <meta
+            name="description"
+            content="Twitter Clone with react nextjs firebase and tailwindcss"
+          />
+          <link rel="icon" href="/favicon.ico" />
+        </Head>
 
-      <main className="grid grid-cols-12">
-        {/* Sidebar */}
-        <SideBar />
+        <main className="grid grid-cols-12">
+          {/* Sidebar */}
+          <SideBar />
 
-        {/* News Feed */}
-        <Feed />
+          {/* News Feed */}
+          <Feed />
 
-        {/* Widget */}
-        <Widget
-          newsResults={newsResults.articles}
-          randomUsers={randomUsers.results}
-        />
-      </main>
-    </div>
+          {/* Widget */}
+          <Widget
+            newsResults={newsResults.articles}
+            randomUsers={randomUsers.results}
+          />
+        </main>
+      </div>
+
+      {/* Modal */}
+      <div>
+        <CommentModal />
+      </div>
+    </>
   );
 }
 
