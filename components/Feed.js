@@ -60,12 +60,7 @@ export default function TweetFeed() {
               exit={{ opacity: 0 }}
               transition={{ duration: 1 }}
             >
-              <div
-                key={tweet.id}
-                className="py-5 border border-gray-100 hover:bg-gray-100/75 transition duration-300 cursor-pointer px-3"
-              >
-                <TweetCard id={tweet.id} tweet={tweet} />
-              </div>
+              <TweetCard key={tweet.id} id={tweet.id} tweet={tweet.data()} />
             </motion.div>
           ))}
         </AnimatePresence>

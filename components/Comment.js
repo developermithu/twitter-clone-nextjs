@@ -1,14 +1,13 @@
-import { Tooltip } from "@chakra-ui/tooltip";
-import { useSession } from "next-auth/react";
 import {
+  ChatIcon,
   DotsHorizontalIcon,
   HeartIcon,
-  SwitchVerticalIcon,
-  ChatIcon,
   ShareIcon,
+  SwitchVerticalIcon,
   TrashIcon,
 } from "@heroicons/react/outline";
 import { HeartIcon as HeartIconFilled } from "@heroicons/react/solid";
+import Moment from "react-moment";
 import {
   collection,
   deleteDoc,
@@ -16,90 +15,92 @@ import {
   onSnapshot,
   setDoc,
 } from "firebase/firestore";
-import Moment from "react-moment";
-import { db, storage } from "../firebase";
-import { useEffect, useState } from "react";
-import { deleteObject, ref } from "firebase/storage";
+import { db } from "../firebase";
+import { useState, useEffect } from "react";
 import { useRecoilState } from "recoil";
-import { modalState, tweetIdState } from "../atom/modalAtom";
-import Link from "next/link";
 import { useRouter } from "next/router";
+import { modalState, tweetIdState } from "../atom/modalAtom";
+import { useSession } from "next-auth/react";
+import { Tooltip } from "@chakra-ui/tooltip";
 
-export default function TweetCard({ tweet, id }) {
+export default function Comment({ comment, commentId, originalTweetId }) {
   const { data: session } = useSession();
+  if (!session) return <Login />;
+
   const [likes, setLikes] = useState([]);
-  const [comments, setComments] = useState([]);
   const [hasLiked, setHasLiked] = useState(false);
-  // Recoil State
   const [open, setOpen] = useRecoilState(modalState);
   const [tweetId, setTweetId] = useRecoilState(tweetIdState);
+  // const [currentUser] = useRecoilState(userState);
   const router = useRouter();
 
-  // get the likes
+  // get the tweet's comment like
   useEffect(() => {
-    onSnapshot(collection(db, "tweets", id, "likes"), (snapshot) =>
-      setLikes(snapshot.docs)
+    onSnapshot(
+      collection(db, "tweets", originalTweetId, "comments", commentId, "likes"),
+      (snapshot) => setLikes(snapshot.docs)
     );
-  }, [db]);
+  }, [db, originalTweetId, commentId]);
 
-  // get the comments
+  // like & unlike functionality per user
   useEffect(() => {
-    onSnapshot(collection(db, "tweets", id, "comments"), (snapshot) =>
-      setComments(snapshot.docs)
-    );
-  }, [db]);
-
-  // It will render when like button triggers
-  useEffect(() => {
-    // here like.id return email
     setHasLiked(
       likes.findIndex((like) => like.id === session?.user.email) !== -1
     );
   }, [likes]);
 
-  // likes.findIndex((like) => console.log(`like: ${like.id}`));
-
-  const likeTweet = async () => {
+  // comment's like & unlike functionality
+  const likeComment = async () => {
     if (hasLiked) {
-      await deleteDoc(doc(db, "tweets", id, "likes", session.user.email));
+      await deleteDoc(
+        doc(
+          db,
+          "tweets",
+          originalTweetId,
+          "comments",
+          commentId,
+          "likes",
+          session?.user.email
+        )
+      );
     } else {
-      await setDoc(doc(db, "tweets", id, "likes", session.user.email), {
-        username: session.user.name,
-      });
+      await setDoc(
+        doc(
+          db,
+          "tweets",
+          originalTweetId,
+          "comments",
+          commentId,
+          "likes",
+          session?.user.email
+        ),
+        {
+          userName: session?.user.name,
+        }
+      );
     }
   };
 
-  const deleteTweet = async () => {
-    await deleteDoc(doc(db, "tweets", id));
-    if (tweet.image) {
-      deleteObject(ref(storage, `tweets/${id}/image`));
-    }
+  const deleteComment = async () => {
+    await deleteDoc(doc(db, "tweets", originalTweetId, "comments", commentId));
   };
 
   return (
-    <div className="py-5 border border-gray-100 hover:bg-gray-100/75 transition duration-300 cursor-pointer px-3">
+    <div className="py-5 border border-gray-100 hover:bg-gray-100/75 transition duration-300 cursor-pointer px-3 pl-16">
       <div className="flex items-start gap-x-3">
-        <img src={tweet?.userImage} alt="user" className="w-12 h-12  rounded-full" />
+        <img src={comment?.userImage} alt="user" className="w-12 h-12 rounded-full" />
         <div className="flex flex-1 flex-col gap-y-3">
           {/* Description */}
           <div className="flex justify-between">
             <div className="flex items-center gap-x-1.5">
-              <h4 className="font-bold capitalize">{tweet?.userName}</h4>
-              <span className="text-gray-500">{tweet?.userEmail}</span>
-              <Moment fromNow>{tweet?.timestamp?.toDate()}</Moment>
+              <h4 className="font-bold capitalize">{comment?.userName}</h4>
+              <span className="text-gray-500">{comment?.userEmail}</span>
+              <Moment fromNow>{comment?.timestamp?.toDate()}</Moment>
             </div>
             <DotsHorizontalIcon className="w-9 h-9 p-1.5 hover:bg-twitter/10 rounded-full cursor-pointer text-gray-500 hover:text-twitter/60 transition duration-300" />
           </div>
           {/* Image */}
-          <p onClick={() => router.push(`/tweet/${id}`)}>
-            {tweet?.content}
-          </p>
-          <img
-            onClick={() => router.push(`/tweet/${id}`)}
-            src={tweet?.image}
-            alt=""
-            className="object-cover rounded-lg mt-3"
-          />
+          <p>{comment?.text}</p>
 
           {/* Buttons */}
           <div className="flex items-center justify-between">
@@ -107,22 +108,18 @@ export default function TweetCard({ tweet, id }) {
               <Tooltip label="Reply" fontSize="x-small">
                 <ChatIcon
                   onClick={() => {
-                    setTweetId(id);
+                    setTweetId(originalTweetId);
                     setOpen(!open);
                   }}
                   className="w-9 h-9 p-1.5 hover:bg-twitter/10 rounded-full cursor-pointer text-gray-500 hover:text-twitter/60 transition duration-300"
                 />
               </Tooltip>
-
-              {comments.length > 0 && (
-                <span className="text-sm">{comments.length}</span>
-              )}
             </div>
 
-            {tweet?.userEmail === session?.user.email && (
+            {comment?.userEmail === session?.user.email && (
               <Tooltip label="Delete" fontSize="x-small">
                 <TrashIcon
-                  onClick={deleteTweet}
+                  onClick={deleteComment}
                   className="w-9 h-9 p-1.5 hover:bg-red-500/10 rounded-full cursor-pointer text-gray-500 hover:text-red-500/60 transition duration-300"
                 />
               </Tooltip>
@@ -137,14 +134,14 @@ export default function TweetCard({ tweet, id }) {
               {hasLiked ? (
                 <Tooltip label="Unlike" fontSize="x-small">
                   <HeartIconFilled
-                    onClick={likeTweet}
+                    onClick={likeComment}
                     className="w-9 h-9 p-1.5 hover:bg-red-500/10 rounded-full cursor-pointer text-red-500 hover:text-red-500/60 transition duration-300"
                   />
                 </Tooltip>
               ) : (
                 <Tooltip label="Like" fontSize="x-small">
                   <HeartIcon
-                    onClick={likeTweet}
+                    onClick={likeComment}
                     className="w-9 h-9 p-1.5 hover:bg-red-500/10 rounded-full cursor-pointer text-gray-500 hover:text-red-500/60 transition duration-300"
                   />
                 </Tooltip>

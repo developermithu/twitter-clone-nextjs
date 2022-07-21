@@ -8,10 +8,6 @@ import {
   ModalCloseButton,
   Button,
 } from "@chakra-ui/react";
-import { modalState, tweetIdState } from "../atom/modalAtom";
-import { useRecoilState } from "recoil";
-import { db } from "../firebase";
-import { useEffect, useState } from "react";
 import {
   addDoc,
   collection,
@@ -23,7 +19,11 @@ import Image from "next/image";
 import Moment from "react-moment";
 import { useSession } from "next-auth/react";
 import ReactTextareaAutosize from "react-textarea-autosize";
-import Router from "next/router";
+import { useRouter } from "next/router";
+import { modalState, tweetIdState } from "../atom/modalAtom";
+import { useRecoilState } from "recoil";
+import { db } from "../firebase";
+import { useEffect, useState } from "react";
 
 export default function CommentModal() {
   const { data: session } = useSession();
@@ -32,7 +32,7 @@ export default function CommentModal() {
   const [tweet, setTweet] = useState({});
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
-  const router = Router;
+  const router = useRouter();
 
   // get the tweet by tweetId after clicking comment btn
   useEffect(() => {
@@ -47,6 +47,7 @@ export default function CommentModal() {
 
     await addDoc(collection(db, "tweets", tweetId, "comments"), {
       text: input,
+      userEmail: session.user.email, //unique
       userName: session.user.name,
       userImage: session.user.image,
       timestamp: serverTimestamp(),

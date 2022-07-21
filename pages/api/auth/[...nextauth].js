@@ -14,4 +14,6 @@ export default NextAuth({
   //   pages: {
   //     signIn: "/auth/signin",
   //   },
+
+  secret: process.env.SECRET_KEY, //random key as I wish
 });

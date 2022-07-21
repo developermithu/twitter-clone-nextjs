@@ -51,9 +51,14 @@ export default function SideBar() {
         onClick={() => signOut()}
         className="flex items-center gap-x-3.5 hover:bg-gray-200 cursor-pointer px-4 py-3 rounded-full transition-all duration-200 mt-10"
       >
-        <Image src={session.user.image} width={40} height={40} />
+        <Image
+          src={session?.user.image ? session.user.image : "/favicon.ico"}
+          width={40}
+          height={40}
+          className="rounded-full"
+        />
         <div className=" hidden lg:flex flex-col">
-          <span className="font-bold capitalize">{session.user.name}</span>
+          <span className="font-bold capitalize">{session?.user.name}</span>
           <span className="text-sm">@DeveloperMithu</span>
         </div>
         <DotsHorizontalIcon className="h-5 hidden lg:inline" />
