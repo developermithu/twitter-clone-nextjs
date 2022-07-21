@@ -15,24 +15,21 @@ import {
   onSnapshot,
   setDoc,
 } from "firebase/firestore";
+import Login from "./Login";
 import { db } from "../firebase";
 import { useState, useEffect } from "react";
 import { useRecoilState } from "recoil";
-import { useRouter } from "next/router";
 import { modalState, tweetIdState } from "../atom/modalAtom";
 import { useSession } from "next-auth/react";
 import { Tooltip } from "@chakra-ui/tooltip";
 
 export default function Comment({ comment, commentId, originalTweetId }) {
   const { data: session } = useSession();
-  if (!session) return <Login />;
 
   const [likes, setLikes] = useState([]);
   const [hasLiked, setHasLiked] = useState(false);
   const [open, setOpen] = useRecoilState(modalState);
   const [tweetId, setTweetId] = useRecoilState(tweetIdState);
-  // const [currentUser] = useRecoilState(userState);
-  const router = useRouter();
 
   // get the tweet's comment like
   useEffect(() => {
@@ -85,10 +82,17 @@ export default function Comment({ comment, commentId, originalTweetId }) {
     await deleteDoc(doc(db, "tweets", originalTweetId, "comments", commentId));
   };
 
+  // all conditional function have to write after useState & useEffect React Hooks function
+  if (!session) return <Login />;
+
   return (
     <div className="py-5 border border-gray-100 hover:bg-gray-100/75 transition duration-300 cursor-pointer px-3 pl-16">
       <div className="flex items-start gap-x-3">
-        <img src={comment?.userImage} alt="user" className="w-12 h-12 rounded-full" />
+        <img
+          src={comment?.userImage}
+          alt="user"
+          className="w-12 h-12 rounded-full"
+        />
         <div className="flex flex-1 flex-col gap-y-3">
           {/* Description */}
           <div className="flex justify-between">

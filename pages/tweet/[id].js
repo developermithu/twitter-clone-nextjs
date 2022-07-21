@@ -3,8 +3,8 @@ import { getSession, useSession } from "next-auth/react";
 import SideBar from "../../components/SideBar";
 import Widget from "../../components/Widget";
 import CommentModal from "../../components/CommentModal";
-import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+import { useRouter } from "next/router";
 import {
   collection,
   doc,
@@ -17,10 +17,10 @@ import { ArrowLeftIcon } from "@heroicons/react/outline";
 import TweetCard from "../../components/TweetCard";
 import { AnimatePresence, motion } from "framer-motion";
 import Comment from "../../components/Comment";
+import Login from "../../components/Login";
 
 export default function TweetPage({ newsResults, randomUsers }) {
   const { data: session } = useSession();
-  if (!session) return <Login />;
 
   const router = useRouter();
   const { id } = router.query;
@@ -28,7 +28,6 @@ export default function TweetPage({ newsResults, randomUsers }) {
   const [comments, setComments] = useState([]);
 
   // get the post data
-
   useEffect(
     () =>
       onSnapshot(doc(db, "tweets", id), (snapshot) =>
@@ -38,7 +37,6 @@ export default function TweetPage({ newsResults, randomUsers }) {
   );
 
   // get comments of the post
-
   useEffect(() => {
     onSnapshot(
       query(
@@ -49,6 +47,8 @@ export default function TweetPage({ newsResults, randomUsers }) {
     );
   }, [db, id]);
 
+   // all conditional function have to write after useState & useEffect React Hooks function
+  if (!session) return <Login />;
   return (
     <>
       <div className="lg:max-w-7xl mx-auto max-h-screen">
