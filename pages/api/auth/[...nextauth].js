@@ -15,5 +15,17 @@ export default NextAuth({
   //     signIn: "/auth/signin",
   //   },
 
-  secret: process.env.SECRET_KEY, //random key as I wish
+  // random key as I wish
+  secret: process.env.SECRET_KEY,
+
+  // through callback function we can pass extra data with session like uid, username
+  callbacks: {
+    async session({ session, token }) {
+      const name = session.user.name;
+
+      session.user.username = name.split(" ").join("").toLowerCase();
+      session.user.uid = token.sub;
+      return session;
+    },
+  },
 });

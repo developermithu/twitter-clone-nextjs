@@ -42,7 +42,7 @@ export default function Comment({ comment, commentId, originalTweetId }) {
   // like & unlike functionality per user
   useEffect(() => {
     setHasLiked(
-      likes.findIndex((like) => like.id === session?.user.email) !== -1
+      likes.findIndex((like) => like.id === session?.user.uid) !== -1
     );
   }, [likes]);
 
@@ -57,7 +57,7 @@ export default function Comment({ comment, commentId, originalTweetId }) {
           "comments",
           commentId,
           "likes",
-          session?.user.email
+          session?.user.uid
         )
       );
     } else {
@@ -69,10 +69,10 @@ export default function Comment({ comment, commentId, originalTweetId }) {
           "comments",
           commentId,
           "likes",
-          session?.user.email
+          session?.user.uid
         ),
         {
-          userName: session?.user.name,
+          username: session?.user.username,
         }
       );
     }
@@ -97,8 +97,8 @@ export default function Comment({ comment, commentId, originalTweetId }) {
           {/* Description */}
           <div className="flex justify-between">
             <div className="flex items-center gap-x-1.5">
-              <h4 className="font-bold capitalize">{comment?.userName}</h4>
-              <span className="text-gray-500">{comment?.userEmail}</span>
+              <h4 className="font-bold capitalize text-lg">{comment?.name}</h4>
+              <span className="text-gray-500">@{comment?.username}.</span>
               <Moment fromNow>{comment?.timestamp?.toDate()}</Moment>
             </div>
             <DotsHorizontalIcon className="w-9 h-9 p-1.5 hover:bg-twitter/10 rounded-full cursor-pointer text-gray-500 hover:text-twitter/60 transition duration-300" />
@@ -120,7 +120,7 @@ export default function Comment({ comment, commentId, originalTweetId }) {
               </Tooltip>
             </div>
 
-            {comment?.userEmail === session?.user.email && (
+            {comment?.uid === session?.user.uid && (
               <Tooltip label="Delete" fontSize="x-small">
                 <TrashIcon
                   onClick={deleteComment}

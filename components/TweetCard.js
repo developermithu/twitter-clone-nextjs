@@ -51,9 +51,8 @@ export default function TweetCard({ tweet, id }) {
 
   // It will render when like button triggers
   useEffect(() => {
-    // here like.id return email
     setHasLiked(
-      likes.findIndex((like) => like.id === session?.user.email) !== -1
+      likes.findIndex((like) => like.id === session?.user.uid) !== -1
     );
   }, [likes]);
 
@@ -61,44 +60,44 @@ export default function TweetCard({ tweet, id }) {
 
   const likeTweet = async () => {
     if (hasLiked) {
-      await deleteDoc(doc(db, "tweets", id, "likes", session.user.email));
+      await deleteDoc(doc(db, "tweets", id, "likes", session.user.uid));
     } else {
-      await setDoc(doc(db, "tweets", id, "likes", session.user.email), {
-        username: session.user.name,
+      await setDoc(doc(db, "tweets", id, "likes", session.user.uid), {
+        username: session.user.username,
       });
     }
   };
 
   const deleteTweet = async () => {
     await deleteDoc(doc(db, "tweets", id));
-    if (tweet.image) {
+    if (tweet?.image) {
       deleteObject(ref(storage, `tweets/${id}/image`));
     }
   };
 
   return (
-    <div className="py-5 border border-gray-100 hover:bg-gray-100/75 transition duration-300 cursor-pointer px-3">
+    <div className="py-5 border border-gray-100 hover:bg-gray-100/75 transition duration-300 px-3">
       <div className="flex items-start gap-x-3">
         <img src={tweet?.userImage} alt="user" className="w-12 h-12  rounded-full" />
         <div className="flex flex-1 flex-col gap-y-3">
           {/* Description */}
           <div className="flex justify-between">
             <div className="flex items-center gap-x-1.5">
-              <h4 className="font-bold capitalize">{tweet?.userName}</h4>
-              <span className="text-gray-500">{tweet?.userEmail}</span>
+              <h4 className="font-bold capitalize text-lg">{tweet?.name}</h4>
+              <span className="text-gray-500">@{tweet?.username}.</span>
               <Moment fromNow>{tweet?.timestamp?.toDate()}</Moment>
             </div>
             <DotsHorizontalIcon className="w-9 h-9 p-1.5 hover:bg-twitter/10 rounded-full cursor-pointer text-gray-500 hover:text-twitter/60 transition duration-300" />
           </div>
           {/* Image */}
-          <p onClick={() => router.push(`/tweet/${id}`)}>
+          <p onClick={() => router.push(`/tweet/${id}`)} className="cursor-pointer">
             {tweet?.content}
           </p>
           <img
             onClick={() => router.push(`/tweet/${id}`)}
             src={tweet?.image}
             alt=""
-            className="object-cover rounded-lg mt-3"
+            className="object-cover rounded-lg mt-3 cursor-pointer"
           />
 
           {/* Buttons */}
@@ -119,7 +118,7 @@ export default function TweetCard({ tweet, id }) {
               )}
             </div>
 
-            {tweet?.userEmail === session?.user.email && (
+            {tweet?.uid === session?.user.uid && (
               <Tooltip label="Delete" fontSize="x-small">
                 <TrashIcon
                   onClick={deleteTweet}

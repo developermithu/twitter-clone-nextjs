@@ -47,8 +47,9 @@ export default function CommentModal() {
 
     await addDoc(collection(db, "tweets", tweetId, "comments"), {
       text: input,
-      userEmail: session.user.email, //unique
-      userName: session.user.name,
+      uid: session.user.uid,
+      name: session.user.name,
+      username: session.user.username,
       userImage: session.user.image,
       timestamp: serverTimestamp(),
     });
@@ -77,11 +78,13 @@ export default function CommentModal() {
                     alt=""
                     className="object-cover rounded-full w-12 h-1/2 mt-3"
                   />
-                  <h3 className="font-bold">{tweet?.userName}</h3>
-                  <span className="text-sm">{tweet?.userEmail}.</span>
+                  <div className="flex items-center gap-x-1.5">
+                  <h3 className="font-bold text-lg">{tweet?.name}</h3>
+                  <span>@{tweet?.username}.</span>
                   <Moment className="text-sm" fromNow>
                     {tweet?.timestamp?.toDate()}
                   </Moment>
+                  </div>
                 </div>
                 <span className="ml-16">{tweet?.content}</span>
                 <div className="flex items-center gap-x-5 mt-14">

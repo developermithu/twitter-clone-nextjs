@@ -54,7 +54,7 @@ export default function TweetPage({ newsResults, randomUsers }) {
       <div className="lg:max-w-7xl mx-auto max-h-screen">
         <Head>
           <title>
-            {tweet?.userName} - {tweet?.content}{" "}
+            {tweet?.name} - {tweet?.content}{" "}
           </title>
           <meta
             name="description"

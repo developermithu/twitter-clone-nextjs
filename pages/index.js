@@ -10,6 +10,7 @@ import CommentModal from "../components/CommentModal";
 export default function Home({ newsResults, randomUsers }) {
   const { data: session } = useSession();
   if (!session) return <Login />;
+  // console.log(session);
 
   return (
     <>

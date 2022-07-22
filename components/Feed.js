@@ -25,10 +25,13 @@ export default function TweetFeed() {
   );
   // console.log(tweets);
 
-  const showToaster = () => {
-    router.push("/");
-    toast("Refreshed!", {
-      icon: "🚀",
+  const showToaster = async () => {
+    const myPromise = router.push("/");
+
+    toast.promise(myPromise, {
+      loading: "Refreshing...",
+      success: "Feed updated!",
+      error: "Oops! something went wrong",
     });
   };
 

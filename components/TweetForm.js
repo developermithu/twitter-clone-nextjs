@@ -31,8 +31,10 @@ export default function TweetForm() {
     setLoading(true);
 
     const docRef = await addDoc(collection(db, "tweets"), {
+      uid: session.user.uid,
+      name: session.user.name,
+      username: session.user.username,
       userEmail: session.user.email, // unique field
-      userName: session.user.name,
       userImage: session.user.image,
       content: input,
       timestamp: serverTimestamp(),
@@ -52,7 +54,9 @@ export default function TweetForm() {
     setInput("");
     setSelectedFile(null);
     setLoading(false);
-    toast.success("Successfully tweeted!");
+    toast("Tweet posted!", {
+      icon: "🚀",
+    });
   };
 
   const addImageToTweet = (e) => {
@@ -76,6 +80,7 @@ export default function TweetForm() {
           width={48}
           height={48}
           alt={session.user.name}
+          className="rounded-full"
         />
 
         <div className="flex-1 flex-col">
