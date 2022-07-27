@@ -11,7 +11,7 @@ import {
 } from "@heroicons/react/outline";
 import SideBarItem from "./SideBarItem";
 import Image from "next/image";
-import { useSession, signOut } from "next-auth/react";
+import { useSession, signOut, signIn } from "next-auth/react";
 
 export default function SideBar() {
   const { data: session } = useSession();
@@ -35,34 +35,44 @@ export default function SideBar() {
       <SideBarItem text="Home" Icon={HomeIcon} />
       <SideBarItem text="Explore" Icon={HashtagIcon} />
       <SideBarItem text="Communities" Icon={UsersIcon} />
-      <SideBarItem text="Notifications" Icon={BellIcon} />
-      <SideBarItem text="Messages" Icon={InboxIcon} />
-      <SideBarItem text="Bookmark" Icon={BookmarkIcon} />
-      <SideBarItem text="Profile" Icon={UserIcon} />
-      <SideBarItem text="More" Icon={DotsCircleHorizontalIcon} />
+      {session && (
+        <>
+          {" "}
+          <SideBarItem text="Notifications" Icon={BellIcon} />
+          <SideBarItem text="Messages" Icon={InboxIcon} />
+          <SideBarItem text="Bookmark" Icon={BookmarkIcon} />
+          <SideBarItem text="Profile" Icon={UserIcon} />
+          <SideBarItem text="More" Icon={DotsCircleHorizontalIcon} />
+        </>
+      )}
 
       {/* Button */}
-      <button className="block w-full rounded-full py-3 text-lg text-white font-bold bg-twitter hover:opacity-90">
-        Tweet
+      <button
+        onClick={session ? "" : () => signIn()}
+        className="block w-full rounded-full py-3 text-lg text-white font-bold bg-twitter hover:opacity-90 mt-3"
+      >
+        {session ? "Tweet" : "Sign In"}
       </button>
 
       {/* User Profile */}
-      <div
-        onClick={() => signOut()}
-        className="flex items-center gap-x-3.5 hover:bg-gray-200 cursor-pointer px-4 py-3 rounded-full transition-all duration-200 mt-10"
-      >
-        <Image
-          src={session?.user.image ? session.user.image : "/favicon.ico"}
-          width={40}
-          height={40}
-          className="rounded-full"
-        />
-        <div className=" hidden lg:flex flex-col">
-          <span className="font-bold capitalize">{session?.user.name}</span>
-          <span className="text-sm">@DeveloperMithu</span>
+      {session && (
+        <div
+          onClick={() => signOut()}
+          className="flex items-center gap-x-3.5 hover:bg-gray-200 cursor-pointer px-4 py-3 rounded-full transition-all duration-200 mt-10"
+        >
+          <Image
+            src={session?.user.image ? session.user.image : "/favicon.ico"}
+            width={40}
+            height={40}
+            className="rounded-full"
+          />
+          <div className=" hidden lg:flex flex-col">
+            <span className="font-bold capitalize">{session?.user.name}</span>
+            <span className="text-sm">@DeveloperMithu</span>
+          </div>
+          <DotsHorizontalIcon className="h-5 hidden lg:inline" />
         </div>
-        <DotsHorizontalIcon className="h-5 hidden lg:inline" />
-      </div>
+      )}
     </div>
   );
 }

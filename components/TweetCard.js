@@ -1,5 +1,5 @@
 import { Tooltip } from "@chakra-ui/tooltip";
-import { useSession } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
 import {
   DotsHorizontalIcon,
   HeartIcon,
@@ -78,7 +78,11 @@ export default function TweetCard({ tweet, id }) {
   return (
     <div className="py-5 border border-gray-100 hover:bg-gray-100/75 transition duration-300 px-3">
       <div className="flex items-start gap-x-3">
-        <img src={tweet?.userImage} alt="user" className="w-12 h-12  rounded-full" />
+        <img
+          src={tweet?.userImage}
+          alt="user"
+          className="w-12 h-12  rounded-full"
+        />
         <div className="flex flex-1 flex-col gap-y-3">
           {/* Description */}
           <div className="flex justify-between">
@@ -90,11 +94,18 @@ export default function TweetCard({ tweet, id }) {
             <DotsHorizontalIcon className="w-9 h-9 p-1.5 hover:bg-twitter/10 rounded-full cursor-pointer text-gray-500 hover:text-twitter/60 transition duration-300" />
           </div>
           {/* Image */}
-          <p onClick={() => router.push(`/tweet/${id}`)} className="cursor-pointer">
+          <p
+            onClick={
+              session ? () => router.push(`/tweet/${id}`) : () => signIn()
+            }
+            className="cursor-pointer"
+          >
             {tweet?.content}
           </p>
           <img
-            onClick={() => router.push(`/tweet/${id}`)}
+            onClick={
+              session ? () => router.push(`/tweet/${id}`) : () => signIn()
+            }
             src={tweet?.image}
             alt=""
             className="object-cover rounded-lg mt-3 cursor-pointer"
@@ -103,12 +114,17 @@ export default function TweetCard({ tweet, id }) {
           {/* Buttons */}
           <div className="flex items-center justify-between">
             <div className="flex items-center">
+              {/* Reply */}
               <Tooltip label="Reply" fontSize="x-small">
                 <ChatIcon
-                  onClick={() => {
-                    setTweetId(id);
-                    setOpen(!open);
-                  }}
+                  onClick={
+                    session
+                      ? () => {
+                          setTweetId(id);
+                          setOpen(!open);
+                        }
+                      : () => signIn()
+                  }
                   className="w-9 h-9 p-1.5 hover:bg-twitter/10 rounded-full cursor-pointer text-gray-500 hover:text-twitter/60 transition duration-300"
                 />
               </Tooltip>
@@ -136,14 +152,14 @@ export default function TweetCard({ tweet, id }) {
               {hasLiked ? (
                 <Tooltip label="Unlike" fontSize="x-small">
                   <HeartIconFilled
-                    onClick={likeTweet}
+                    onClick={session ? likeTweet : () => signIn()}
                     className="w-9 h-9 p-1.5 hover:bg-red-500/10 rounded-full cursor-pointer text-red-500 hover:text-red-500/60 transition duration-300"
                   />
                 </Tooltip>
               ) : (
                 <Tooltip label="Like" fontSize="x-small">
                   <HeartIcon
-                    onClick={likeTweet}
+                    onClick={session ? likeTweet : () => signIn()}
                     className="w-9 h-9 p-1.5 hover:bg-red-500/10 rounded-full cursor-pointer text-gray-500 hover:text-red-500/60 transition duration-300"
                   />
                 </Tooltip>

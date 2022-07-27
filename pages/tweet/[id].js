@@ -47,7 +47,7 @@ export default function TweetPage({ newsResults, randomUsers }) {
     );
   }, [db, id]);
 
-   // all conditional function have to write after useState & useEffect React Hooks function
+  // all conditional function have to write after useState & useEffect React Hooks function
   if (!session) return <Login />;
   return (
     <>

@@ -7,7 +7,7 @@ import {
 import { useRef, useState } from "react";
 import TextareaAutosize from "react-textarea-autosize";
 import Image from "next/image";
-import { useSession } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
 import {
   collection,
   addDoc,
@@ -75,13 +75,21 @@ export default function TweetForm() {
     <>
       <Toaster position="top-center" reverseOrder={false} />
       <div className="flex gap-x-4 items-start mt-5">
-        <Image
-          src={session.user.image}
-          width={48}
-          height={48}
-          alt={session.user.name}
-          className="rounded-full"
-        />
+        {session ? (
+          <Image
+            src={session.user.image}
+            width={48}
+            height={48}
+            alt={session.user.name}
+            className="rounded-full"
+          />
+        ) : (
+          <img
+            src="http://sanjaymotels.com/wp-content/uploads/2019/01/testimony.png"
+            alt="avatar"
+            className="w-12 h-12"
+          />
+        )}
 
         <div className="flex-1 flex-col">
           {/* form */}
@@ -129,7 +137,7 @@ export default function TweetForm() {
 
             {/* Tweet Button */}
             <button
-              onClick={createTweet}
+              onClick={session ? createTweet : () => signIn()}
               disabled={!input.trim() || loading}
               className="px-5 py-2 rounded-full bg-twitter hover:opacity-90 disabled:opacity-40 font-bold text-white"
             >

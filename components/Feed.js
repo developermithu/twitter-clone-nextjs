@@ -38,6 +38,7 @@ export default function TweetFeed() {
   return (
     <>
       <Toaster position="top-center" reverseOrder={false} />
+      
       <div className="col-span-9 lg:col-span-6 border border-gray-100 border-t-0">
         <div className="flex items-center justify-between border-b pb-3 sticky top-0 pt-1.5 z-50 px-3 bg-white">
           <h1 className="text-xl font-bold">Home</h1>
